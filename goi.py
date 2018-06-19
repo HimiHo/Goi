@@ -18,6 +18,14 @@ def main():
     entities = pygame.sprite.Group()
     platforms = []
     entities.add(hero)
+    screen = pygame.display.set_mode((WIN_WIDTH, WIN_HEIGHT),
+                                     HWSURFACE|DOUBLEBUF|RESIZABLE)
+    pygame.display.set_caption("Goi")
+    up = down = left = right = False
+    clock = pygame.time.Clock()
+    bg = Surface((WIN_WIDTH, WIN_HEIGHT))
+    bg.fill(Color("#964B00"))
+
     level = [
        "-------------------------",
        "-                       -",
@@ -32,20 +40,23 @@ def main():
        "-                       -",
        "-      ---              -",
        "-                       -",
-       "-   -----------        -",
+       "-   -----------         -",
        "-                       -",
        "-                -      -",
        "-                   --  -",
        "-                       -",
        "-                       -",
        "-------------------------"]
-    screen = pygame.display.set_mode((WIN_WIDTH, WIN_HEIGHT),
-                                     HWSURFACE|DOUBLEBUF|RESIZABLE)
-    pygame.display.set_caption("Goi")
-    up = down = left = right = False
-    clock = pygame.time.Clock()
-    bg = Surface((WIN_WIDTH, WIN_HEIGHT))
-    bg.fill(Color("#964B00"))
+    x=y=0
+    for row in level:
+        for col in row:
+            if col == "-":
+                pf = Surface((PLATFORM_WIDTH,PLATFORM_HEIGHT))
+                pf.fill(Color(PLATFORM_COLOR)) 
+                screen.blit(pf,(x,y))  
+            x += PLATFORM_WIDTH
+        y += PLATFORM_HEIGHT
+        x = 0
 
     while 1:
         clock.tick(60)
@@ -73,7 +84,8 @@ def main():
                 right = False
             if e.type == KEYUP and e.key == K_LEFT:
                 left = False
-        
+
+        screen.blit(bg, (0,0))
         x=y=0
         for row in level:
             for col in row:
@@ -84,10 +96,10 @@ def main():
                 x += PLATFORM_WIDTH
             y += PLATFORM_HEIGHT
             x = 0
-
-        screen.blit(bg, (0,0))
+            
         hero.draw(screen)
         hero.update(up, down, left, right)
+        entities.draw(screen)
         pygame.display.update()
     
 if __name__ == "__main__":
